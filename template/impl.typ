@@ -151,121 +151,118 @@
   logo: none,
   add_toc: false,
   lecturer: str,
+  lecturer_grade: str,
   body,
 ) = {
-  let completion_text = "Выполнил студент группы"
-
+  let completion_text = "Cтуденты группы"
+  
   if authors.len() > 1 {
-    completion_text = "Выполнили студенты группы"
+    completion_text = "Cтуденты группы"
   }
-
+  
   // Set the document's basic properties.
   set document(author: authors, title: title)
   set page(
     margin: (left: 25mm, right: 15mm, top: 20mm, bottom: 20mm),
     number-align: center,
   )
-
-
+  
+  
   set text(font: "Times New Roman", lang: "ru")
-
+  
   set heading(numbering: "1.1")
   set par(leading: 0.75em)
-
-
+  
+  
   set align(center)
   set par(spacing: 2mm)
-
-  image("./logo.png", width: 20mm)
-
+  
+  image("./logo_monochrome.png", width: 20mm)
+  
   [
     #upper("Минобрнауки России\n")
     Федеральное государственное бюджетное образовательное учреждение
-
+    
     высшего образования
-
+    
     *"МИРЭА -- Российский технологический университет"*
-
+    
     #text(size: 1.2em, [*РТУ МИРЭА*])
   ]
-
+  
   line(length: 100%, stroke: (paint: black, thickness: 2pt))
-
+  
   set text(14pt)
   [
     Институт информационных технологий
     #v(6mm)
     Кафедра #lower(department)
     #v(20mm)
-    #text(16pt, [*#upper(title)*])
-
+    #text(16pt, [*#title*])
+    
     по дисциплине "#course"
-
+    
     #v(5mm)
     #if theme != "" {
       [Тема: "#theme"]
     }
-
-    #v(40mm)
+    
+    #v(50mm)
     #set text(12pt)
     #set align(start)
+    
+    *Выполнили:*
 
     #grid(
-      columns: (1fr, 1fr, 1fr),
-      gutter: 10mm,
-      completion_text,
-      group,
-      authors.map(a => a).join("\n"),
-      grid.cell(colspan: 2, [Принял преподаватель]),
-      [#lecturer]
+      columns: (7cm, 9.5cm),
+      grid.cell(align(left, [#completion_text #group])),
+      grid.cell(align(right, [Буренин А. А.])),
     )
-
-    #v(20mm)
-
+    #v(10mm)
+    *Принял:*
     #grid(
-      columns: (1fr, 1fr, 1fr),
-      rows: 20mm,
-      [Работа выполнена],
-      [#quote(underline("    ")) #underline("               ") 20#underline("    ")],
-      align(center, text(baseline: 5mm, size: 10pt)[_(Подпись студента)_]),
-
-      [Зачтено],
-      [#quote(underline("    ")) #underline("               ") 20#underline("    ")],
-      align(center, text(baseline: 5mm, size: 10pt)[_(Подпись преподавателя)_]),
+      columns: (7cm, 9.5cm),
+      grid.cell([Старший преподаватель кафедры МОСИТ]),
+      grid.cell([
+        #align(right, [#lecturer]),
+      ]
+      )
     )
+    
+    #v(45mm)
   ]
-
+  
   v(13mm)
   align(center)[Москва #date.year()]
   pagebreak()
-
-
+  
+  
   // Main body.
-
+  
   set text(size: 14pt)
   set align(start)
-
+  
   set text(hyphenate: false)
-
+  
   set heading(numbering: "1.")
-  show heading.where(level: 1): it => text(size: 18pt, it)
-  show heading.where(level: 2): it => text(size: 16pt, it)
+  show heading.where(level: 1): it => text(size: 16pt, it.body)
+  show heading.where(level: 2): it => text(size: 14pt, align(left, it.body))
   show heading.where(level: 3): it => text(14pt, it)
   show heading.where(level: 4): it => text(14pt, it)
   show heading.where(level: 5): it => text(14pt, it)
   show heading.where(level: 6): it => text(14pt, it)
-
+  
   show figure: set block(breakable: true)
   set figure.caption(separator: [ --- ])
-
+  
   show figure.where(kind: "table"): figure => {
     figure.body
   }
-
+  
   show figure.where(kind: "listing"): figure => {
     figure.body
   }
-
+  
   show figure.where(kind: "picture"): it => {
     block(
       inset: (left: -13mm),
@@ -278,15 +275,18 @@
       #text(size: 12pt, it.caption)
     ]
   }
-
+  
   if add_toc {
+    set par(
+      leading: 5mm,
+    )
     set align(center)
     outline(depth: 3, indent: 0em)
     pagebreak()
   }
-
+  
   set page(numbering: "1")
-
+  
   // first-line-indent не работает для первого параграфа,
   // поэтому здесь этот костыль
   set page(margin: (left: 39mm))
@@ -296,6 +296,6 @@
     leading: 5mm,
     hanging-indent: -13mm,
   )
-
+  
   body
 }
